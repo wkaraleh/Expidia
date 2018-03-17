@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="Expedia Assignment"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="IndexForm"  > 
+                <h:panelGrid columns="2" cellpadding="5">  
+
+                    <p:outputLabel style="font-weight:bold; color: dimgrey; font-size: large;" value="Distination you want to visit: " />  
+                    <p:autoComplete size="70" tabindex="1"  style="width: 200px; font-size: large;" value="#{offerSearchController.countryName}" immediate="true" autocomplete="#{offerSearchController.countryList()}" completeMethod="#{offerSearchController.countryList()}" />  
+
+                    <p:outputLabel style="font-weight:bold; color: dimgrey; " value="Region Id: " />  
+                    <p:autoComplete size="70" tabindex="2"  value="#{offerSearchController.regionID}" completeMethod="#{offerSearchController.regionIDList()}" />  
+
+                    <p:outputLabel style="font-weight:bold; color: dimgrey; " value="" />  
+                    <p:commandButton id="searchButton" ajax="true" update="datalist JobViewDlg" style="width: 200px;" actionListener="#{offerSearchController.doSearch()}"   icon="ui-icon-search" value="#{bundle.View}"  />
+
+                </h:panelGrid> 
+
+                <p:panelGrid columns="1">
+
+                    <p:panel header="#{bundle.ListJobTitle}">
+                        <p:dataTable id="datalist" value="#{offerSearchController.items}" var="item"
+                                     selectionMode="single" selection="#{offerSearchController.selected}"
+                                     paginator="true" 
+                                     rowKey="#{item.hotelInfo}"
+                                     rows="10" rowIndexVar="index"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+
+                            <p:ajax event="rowSelect"   update="viewButton specialOffer"/>
+                            <p:ajax event="rowUnselect" update="viewButton specialOffer"/>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Offer Infos"/>
+                                </f:facet>
+                                <h:panelGrid styleClass="noBorders" style="border: aqua;" columns="1"  >
+
+                                    <h:panelGroup style="font-weight: bold; font-size: 22px;">
+                                        <h:outputText 
+                                            value="Offer # #{index + 1}" />
+                                        <h:outputText  value="      "/>
+                                        <h:outputText  value="#{item.destination.longName}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup style="font-weight: bold; font-size: 16px;" >
+                                        <h:panelGroup style=" margin-right: 75px; margin-top: -50;">
+                                            <p:graphicImage url="#{item.hotelInfo.hotelImageUrl}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup style="margin-top: 50px; margin-right: 50px;">
+                                            <h:outputText style="font-weight: bold" value="#{item.hotelInfo.hotelName}"/>
+                                        </h:panelGroup>
+                                        <h:panelGroup>
+                                            <h:outputText style="font-weight: bold" value="#{item.hotelInfo.hotelDestination}"/>
+                                        </h:panelGroup>
+
+                                    </h:panelGroup>
+                                    <h:panelGrid styleClass="noBorders" style="border: aqua;"   >
+                                        <p:commandButton style="height: 23px; width: 250px" id="specialOffer"  update=":IndexForm:JobViewDlg" oncomplete="PF('JobViewDialog').show()" value="Special Offer in #{item.hotelInfo.hotelDestination}" title="View">
+                                            <f:setPropertyActionListener value="#{item}" target="#{offerSearchController.selected}" />
+                                        </p:commandButton>
+                                        
+                                        <h:commandLink style="height: 21px; width: 250px" styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="viewButton" action="#{offerSearchController.redirect()}"  target="_blank" title="View">
+                                            <h:outputText value="Hotel Deals in #{item.destination.shortName}" />
+                                        </h:commandLink>Hint: Kindly to Select the row before showing the deal..
+                                    </h:panelGrid>
+                                </h:panelGrid>
+
+                            </p:column>
+
+                            <f:facet name="footer">
+
+
+
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+
+                </p:panelGrid>
+                <p:dialog id="JobViewDlg" width="500px;" widgetVar="JobViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewJobTitle}">
+                    <h:form id="JobViewForm">
+                        <h:panelGroup id="display" style="width: 500px; ">
+                            <h:panelGroup style="font-weight: bold; font-size: 20px;" >
+                                <p:panelGrid columns="2" styleClass="noBorders" >
+                                    <p:graphicImage url="#{offerSearchController.selected.hotelInfo.hotelImageUrl}" width="200px;"/>
+                                    <p:panelGrid columns="1" styleClass="noBorders" >
+
+                                        <h:outputText value="Special offer, Save up to #{offerSearchController.selected.hotelPricingInfo.averagePriceValue}%" />
+                                        <h:outputText value=" " />
+                                        <h:outputText value="Location: #{offerSearchController.selected.hotelInfo.hotelDestination}" />
+                                        <h:outputText value=" " />
+                                        <h:outputText value="just #{offerSearchController.selected.hotelPricingInfo.totalPriceValue} #{offerSearchController.selected.hotelPricingInfo.currency} for #{offerSearchController.selected.offerDateRange.lengthOfStay}" /> 
+                                        <h:outputText value=" " />
+
+                                        <h:outputText value="Hotel Name :  #{offerSearchController.selected.hotelInfo.hotelName}" />
+                                        <h:outputText value=" " />
+                                        <h:outputText value="Hotel City : #{offerSearchController.selected.hotelInfo.hotelDestination}" />
+                                        <h:outputText value=" " />
+                                        <h:outputText value="Length Of Stay : #{offerSearchController.selected.offerDateRange.lengthOfStay}" /> 
+                                        <h:outputText value=" " />
+                                        <h:outputText value="Travel Start Date : #{offerSearchController.selected.offerDateRange.travelStartDate[0]}/#{offerSearchController.selected.offerDateRange.travelStartDate[1]}/#{offerSearchController.selected.offerDateRange.travelStartDate[2]}" />
+                                        <h:outputText value=" " />
+                                        <h:outputText value="Travel End Date : #{offerSearchController.selected.offerDateRange.travelEndDate[0]}/#{offerSearchController.selected.offerDateRange.travelEndDate[1]}/#{offerSearchController.selected.offerDateRange.travelEndDate[2]}" />
+                                        <h:outputText value=" " />
+
+                                    </p:panelGrid>
+                                    <h:outputText value=" " />
+                                    <p:commandButton value="Close" onclick="PF('JobViewDialog').hide()"/>
+                                </p:panelGrid>
+
+
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="welcomeDilog" style="height: 200px;" widgetVar="welcomeDilog" closable="false" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewJobTitle}">
+                    <h:form id="welcomeForm">
+                        <h:panelGroup id="display">
+                            <h:panelGrid >
+                                <h:panelGroup style="height: 150px; width: 200px;text-align: center; font-weight: bold; font-size: 22px;">
+                                    <h:outputText value="You are Welcome On Expedia Assignment V1.1 "/>
+                                </h:panelGroup>
+                                <h:panelGroup style="margin-left: 200px;">
+                                    <p:commandButton value="Close" onclick="PF('welcomeDilog').hide()"/>
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+
+                        </h:panelGroup>
+                    </h:form>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+
