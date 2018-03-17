@@ -12,7 +12,6 @@ Run it as web application
 
 ## Usage Instructions
 
-
 ## Future
 
 ## Contribution

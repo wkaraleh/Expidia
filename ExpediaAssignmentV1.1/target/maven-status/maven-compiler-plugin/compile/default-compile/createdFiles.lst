@@ -1,0 +1,16 @@
+com\expidia\model\HotelInfo.class
+com\expedia\jsf\OfferSearchController.class
+com\expidia\model\Converter.class
+com\expidia\model\OfferInfo.class
+com\expidia\model\Offers.class
+com\expidia\model\Address.class
+com\expidia\model\Hotel.class
+com\expidia\model\HotelPricingInfo.class
+com\expidia\model\Destination.class
+com\expidia\utils\JacksonObjectMapper.class
+com\expidia\utils\NameStrategy.class
+com\expidia\model\OfferDateRange.class
+com\expidia\model\UserInfo.class
+com\expidia\model\HotelUrls.class
+com\expidia\model\TargetData.class
+com\expidia\model\Persona.class
